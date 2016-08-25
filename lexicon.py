@@ -1,36 +1,44 @@
-class Lexicon(object):
-
-	def __init__(self):
-		pass
-
-	def convert_number(self, num):
-		try:
-			return int(num)
-		except ValueError:
-			return None
-			
-	def scan(self, words):
-		direction = ['north', 'east', 'south']
-		verb = ['go', 'kill', 'eat']
-		stop = ['the', 'in', 'of']
-		noun = ['bear', 'princess']
-		stuff = words.split()
-		list = []
-
-		for s in stuff:
-			if s in direction:
-				list.append(('direction', s))
-			elif s in verb:
-				list.append(('verb', s))
-			elif s in stop:
-				list.append(('stop', s))
-			elif s in noun:
-				list.append(('noun', s))
-			elif s.isdigit():
-				list.append(('number', lexicon.convert_number(s)))
-			else:
-				list.append(('error', s))
-				
-		return list
+from nose.tools import *
+from ex48.lexicon import Lexicon
 
 lexicon = Lexicon()
+
+def test_directions():
+	assert_equal(lexicon.scan("north"), [('direction', 'north')])
+	result = lexicon.scan("north south east")
+	assert_equal(result, [('direction', 'north'),
+                          ('direction', 'south'),
+                          ('direction', 'east')])
+def test_verbs():
+    assert_equal(lexicon.scan("go"), [('verb', 'go')])
+    result = lexicon.scan("go kill eat")
+    assert_equal(result, [('verb', 'go'),
+                          ('verb', 'kill'),
+                          ('verb', 'eat')])
+						  
+def test_stops():
+    assert_equal(lexicon.scan("the"), [('stop', 'the')])
+    result = lexicon.scan("the in of")
+    assert_equal(result, [('stop', 'the'),
+                          ('stop', 'in'),
+                          ('stop', 'of')])
+						  
+def test_nouns():
+    assert_equal(lexicon.scan("bear"), [('noun', 'bear')])
+    result = lexicon.scan("bear princess")
+    assert_equal(result, [('noun', 'bear'),
+                          ('noun', 'princess')])
+
+def test_numbers():
+	assert_equal(lexicon.scan("1234"), [('number', 1234)])
+	result = lexicon.scan("3 91234")
+	assert_equal(result, [('number', 3),
+				('number', 91234)])				
+
+def test_errors():
+    assert_equal(lexicon.scan("ASDFADFASDF"), [('error', 'ASDFADFASDF')])
+    result = lexicon.scan("bear IAS princess")
+    assert_equal(result, [('noun', 'bear'),
+                          ('error', 'IAS'),
+                          ('noun', 'princess')])				
+					  
