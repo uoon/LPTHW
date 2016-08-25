@@ -1,34 +1,36 @@
-# ex48
-zed shaw's ex48
-
 class Lexicon(object):
 
 	def __init__(self):
 		pass
 
-	def scan(self, text):
-		#When running test_directions, assert_equal(lexicon.scan("north"), [('direction', 'north')])
-		#gets an AssertionError: None != [('direction', 'north')]
-		#I need to get words that do not fit a value to return None.
-		word_types = {'north': 'direction', 'south': 'direction', 'east': 'direction', 'west': 'direction', 
-					'down': 'direction', 'up': 'direction', 'left': 'direction', 'right': 'direction', 
-					'back': 'direction', 'go': 'verb', 'stop': 'verb', 'kill': 'verb', 'eat': 'verb', 
-					'the': 'stop', 'in': 'stop', 'of': 'stop', 'from': 'stop', 'at': 'stop', 'it': 'stop', 
-					'door': 'noun', 'bear': 'noun', 'princess': 'noun', 'cabinet': 'noun'}
-		stuff = text.split()
-		scanlist = []
-		
-		for i in stuff:
-			if i in word_types:
-				#I could either add to scanlist or just return it to match assert_equal
-				#scanlist.append((word_types[i], i)) might be another option and return scanlist
-				#return [(word_types[i], i)] doesn't work with a new list for multiple words, so
-				#I might have to append to the list to make it work.
-				scanlist.append((word_types[i], i))
-				return scanlist
+	def convert_number(self, num):
+		try:
+			return int(num)
+		except ValueError:
+			return None
+			
+	def scan(self, words):
+		direction = ['north', 'east', 'south']
+		verb = ['go', 'kill', 'eat']
+		stop = ['the', 'in', 'of']
+		noun = ['bear', 'princess']
+		stuff = words.split()
+		list = []
+
+		for s in stuff:
+			if s in direction:
+				list.append(('direction', s))
+			elif s in verb:
+				list.append(('verb', s))
+			elif s in stop:
+				list.append(('stop', s))
+			elif s in noun:
+				list.append(('noun', s))
+			elif s.isdigit():
+				list.append(('number', lexicon.convert_number(s)))
 			else:
-				return 'None'
-			
-			
+				list.append(('error', s))
 				
-				
+		return list
+
+lexicon = Lexicon()
